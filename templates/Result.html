@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Result</title>
+	<style>
+		section {
+			display: grid;
+			grid-template-columns: repeat(9, 1fr);
+		}
+	</style>
+</head>
+
+<body>
+	<h1>Result</h1>
+	<h3>Found {{resultNumber}} Result for : {{searchingBy}}</h3>
+    <a href="/export?word={{searchingBy}}">Generate CSV</a>
+    <a href="/">Back</a>
+	<section>
+		<h4>index</h4>
+		<h4>user</h4>
+		<h4>title</h4>
+		<h4>content</h4>
+		<h4>comment</h4>
+		<h4>link</h4>
+		<h4>date</h4>
+		<h4>view</h4>
+		<h4>rate</h4>
+        
+		{% for content in contents %}
+        <span>{{content.index}}</span>
+        <span>{{content.user}}</span>
+        <span>{{content.title}}</span>
+        <span>{{content.content}}</span>
+        <span>{{content.comment}}</span>
+        <a href = "{{content.link}}" target="_blank">Apply</a>
+        <span>{{content.date}}</span>
+        <span>{{content.view}}</span>
+        <span>{{content.rate}}</span>
+        {% endfor %}
+	</section>
+</body>
+
+</html>
