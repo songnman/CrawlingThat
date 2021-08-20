@@ -16,7 +16,7 @@ headers = {
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'
 }
 
-#리스트 긁어오기
+#*리스트 긁어오기
 def extract_arca_list(start_page, last_page, word):
     contents = []
     last_page += start_page - 1
@@ -55,7 +55,7 @@ def extract_arca_list(start_page, last_page, word):
             # break #Test 테스트용
     return contents
     
-#컨텐츠 긁어오기
+#*컨텐츠 긁어오기
 def extract_contents(html):
     index = html.attrs['href'].split('/b/counterside/')[1].split('?')[0]
     if html.find('span', {"class": "title"}) :
@@ -72,7 +72,7 @@ def extract_contents(html):
         inner_comments = extract_inner_comments(soup)
         # inner_content = None
         # inner_comments = None
-    else: #(권한 없음) 예외처리
+    else: #!(권한 없음) 예외처리
         title = html.find('span', {"class": "vcol col-title"}).text
         anchor = None
         date = None
@@ -94,7 +94,7 @@ def extract_contents(html):
         'rate': rate
     }
 
-#내용 긁어오기
+#*내용 긁어오기
 def extract_inner_content(soup):
     result_content = soup.find('div', {"class": "article-content"})
 
@@ -105,11 +105,10 @@ def extract_inner_content(soup):
     else:
         return None
 
-#코멘트 긁어오기
+#*코멘트 긁어오기
 def extract_inner_comments(soup):
     comments = []
     result_comments = soup.find('div', {"class": "article-comment"}).find_all('div', {'class' : 'comment-wrapper'})
-    # print(result_comments)
     if (result_comments):
         for comment in result_comments:
             dic = {}
