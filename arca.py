@@ -109,7 +109,7 @@ def extract_inner_content(soup):
 def extract_inner_comments(soup):
     comments = []
     result_comments = soup.find('div', {"class": "article-comment"}).find_all('div', {'class' : 'comment-wrapper'})
-    if (result_comments):
+    if result_comments:
         for comment in result_comments:
             dic = {}
             if comment.find('div', {'class' : 'text'}):
