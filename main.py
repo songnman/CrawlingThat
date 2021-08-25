@@ -1,7 +1,7 @@
 # from dc_inside import extract_dc_contents
 from datetime import datetime, timezone
 from flask import Flask, render_template, request, redirect, send_file
-from arca import extract_arca_list
+from arca import extract_arca_list, extract_arca_single
 from save import save_to_file
 from threading import Thread
 import time
@@ -47,7 +47,7 @@ def threaded(interval,word):
 def stop_repeat():
     global is_end
     is_end = True
-    return render_template("Repeat.html")
+    return render_template("Search.html")
 
 @app.route("/report")
 def report():
@@ -61,6 +61,17 @@ def report():
         "Result.html",
         searchingBy=word,
         resultNumber=len(contents),
+        contents=contents)
+        
+@app.route("/report_single")
+def report_single():
+    index = request.args.get('index')
+    contents = extract_arca_single(index)
+    # db[word] = contents
+    return render_template(
+        "Result.html",
+        searchingBy=None,
+        resultNumber=1,
         contents=contents)
    
 @app.route("/export")
