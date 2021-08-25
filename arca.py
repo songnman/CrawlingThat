@@ -115,7 +115,9 @@ def extract_contents(html, inner_bool):
 			inner_comments = '[Gathering...]'
 
 	else: #!(권한 없음) 예외처리
-		title = html.find('span', {"class": "vcol col-title"}).text
+		print(html)
+		title = html.find('span', {"class": "vcol col-title"}).i.text
+		print(title)
 		anchor = None
 		date = None
 		rate = None
