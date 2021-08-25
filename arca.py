@@ -45,15 +45,16 @@ def extract_arca_list(start_page, last_page, word):
 			TotlaListCount = len(results)
 			CurrentListCount = 0
 			
-			# # #* 미리보기 컨텐츠 생성
-			# contents = []
-			# for result in results:
-			# 		content = extract_contents(result, False)
-			# 		contents.append(content)
-			# save_to_file(contents,word)
-			
-			#* 내부 컨텐츠까지 생성
+			#* 미리보기 컨텐츠 생성
 			contents = []
+			for result in results:
+					content = extract_contents(result, False)
+					contents.append(content)
+			save_to_file(contents,word)
+			print("Preview Loaded.")
+			
+			# #* 내부 컨텐츠까지 생성
+			contents.clear()
 			for result in results:
 					#Delay 넣고 체크 시작
 					CurrentListCount += 1
@@ -62,7 +63,6 @@ def extract_arca_list(start_page, last_page, word):
 					time.sleep(wait_time)
 					content = extract_contents(result, True)
 					contents.append(content)
-					# break #Test 테스트용
 	return contents
 
 #*싱글 긁어오기

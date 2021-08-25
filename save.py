@@ -10,25 +10,23 @@ def save_to_file(contents, keyword):
         file = open("temp.csv", mode="w", encoding='utf-8-sig', newline='')
         write_row(contents,file)
         
-        all_filenames = ["temp.csv", f"results/{keyword}.csv"]
-        combined_csv = pd.concat([pd.read_csv(f) for f in all_filenames ]).sort_values(by=['index'], ascending=False)
-
+        all_filenames = ["temp.csv", my_file]
+        combined_csv = pd.concat([pd.read_csv(f) for f in all_filenames ])
         combined_csv = combined_csv.drop_duplicates(subset = 'index',keep = 'first')
-        combined_csv.sort_values(by=['index'], ascending=False)
-
-        combined_csv.to_csv( f"results/{keyword}.csv", index=False, encoding='utf-8-sig')
+        combined_csv = combined_csv.sort_values(by=['index'], ascending=False)
+        combined_csv.to_csv( my_file, index=False, encoding='utf-8-sig')
         
         return
     else:
         #*신규파일 생성 시퀀스
-        file = open(f"results/{keyword}.csv", mode="w", encoding='utf-8-sig', newline='')
+        file = open(my_file, mode="w", encoding='utf-8-sig', newline='')
         write_row(contents,file)
         print(f"{file} is Created.")
         return
 
 def write_row(contents, file):
     writer = csv.writer(file)
-    writer.writerow(["index", "user", "title", "content", "comment", "link", "date", "veiw", "rate"])
+    writer.writerow(["index", "user", "title", "content", "comment", "link", "date", "view", "rate"])
     for content in contents:
         writer.writerow(list(content.values()))
     file.close()
