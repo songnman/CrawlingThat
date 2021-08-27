@@ -20,18 +20,15 @@ headers = {
 #*리스트 긁어오기
 def extract_arca_list(start_page, last_page, word):
 	last_page += start_page - 1
-	result_index_list = list()
-	result_rate_list = list()
+	# result_index_list = list()
+	# result_rate_list = list()
 	result_contents = []
 
 	my_file = f"results/{word}.csv"
 	if os.path.exists(my_file):
 		f = open(f"results/{word}.csv",'r', encoding='utf-8-sig', newline='')
 		rdr = csv.DictReader(f)
-		# next(rdr)
 		for line in rdr:
-			# result_index_list.append(line[0])
-			# result_rate_list.append(line[8])
 			content = {
 					'index': line['index'],
 					'user' : line['user'],
@@ -41,67 +38,74 @@ def extract_arca_list(start_page, last_page, word):
 					'link': line['link'],
 					'date': line['date'],
 					'view': line['view'],
-					'rate': line['rate']
+					'rate': line['rate'],
+					'comment_count': line['comment_count']
 			}
 			result_contents.append(content)
+		
 		# result_index_list.sort(reverse = True)
 		# last_index = result_index_list[0]
-		# print(f'{word}\'s Saved Last Index is : {last_index}')
+		print(f'{word}\'s Search List')
+		
 	for page in range(start_page, last_page + 1):
 		print(f"Processing Page: {page}/{last_page}")
 		result = requests.get(f"{GALLARY_URL}?&p={page}&target=title_content&keyword={word}",headers=headers)
 		soup = BeautifulSoup(result.text, 'html.parser')
 		results = soup.find('div', {"class": "list-table"}).find_all(lambda tag: tag.name == 'a' and tag.get('class') == ['vrow'])
-		
+
 		TotlaListCount = len(results)
 		CurrentListCount = 0
 		contents = []
-		
+
 		# #* 내부 컨텐츠 생성
-		contents.clear()
 		for result in results:
 			CurrentListCount += 1
-			print(f"Extract Contents: {CurrentListCount}/{TotlaListCount}")
+			print(f"Extract Contents: {CurrentListCount}/{TotlaListCount}", end='')
+
+			index = Extract_index(result)
+			rate = Extract_rate(result)
+			comment_count = Extract_Comment_Count(result)
 			
-			index = result.attrs['href'].split('/b/counterside/')[1].split('?')[0]
-			rate = result.find('span', {"class": "vcol col-rate"}).text
-			
-			match_content = [d for d in result_contents if d['index'] == index][0]
-			# print(match_content)
-			# print(type(match_content))
-			# if not match_content :
-			if not int(float(match_content['rate'])) == int(rate) :
-				print(match_content['link'])
-				content = extract_contents(result, True)
-				contents.append(content)
-				wait_time = random.uniform(1.0,4.0)
-				print(f"Sleep Time[{wait_time}]")
-				time.sleep(wait_time)
-			# elif index == True:
-			# 	content = extract_contents(result, True)
-			# 	contents.append(content)
-				
-			# 	wait_time = random.uniform(1.0,4.0)
-			# 	print(f"Sleep Time[{wait_time}]")
-			# 	time.sleep(wait_time)
-				
+			match_content = {}
+			for item in result_contents :
+				if item["index"] == index :
+					match_content = item
+			#*[2021-08-28 03:44:27] 해당 게시물이 저장되어있고, 추천수가 똑같을 경우 스크랩을 하지 않는다.
+			if match_content and int(float(match_content['rate'])) == int(float(rate)) and int(float(match_content['comment_count'])) == int(float(comment_count)) :
+				print()
+				continue
+
+			content = extract_contents(result)
+			contents.append(content)
+			# break
+			wait_time = round(random.uniform(1.0,4.0),3)
+			print(f" [{wait_time}]")
+			time.sleep(wait_time)
 	return contents
+
+def Extract_rate(result):
+	rate = result.find('span', {"class": "vcol col-rate"}).text
+	return rate
+
+def Extract_index(result):
+	index = result.attrs['href'].split('/b/counterside/')[1].split('?')[0]
+	return index
 
 #*싱글 긁어오기
 def extract_arca_single(index):
 	contents = []
 	result = requests.get(f"{GALLARY_URL}/{index}", headers=headers)
 	soup = BeautifulSoup(result.text, 'html.parser')
-	print(soup)
 	anchor = f"{GALLARY_URL}/{index}"
 	inner_content = extract_inner_content(soup)
 	inner_comments = extract_inner_comments(soup)
-	
+
 	title = soup.find('div', {"class": "title"}).text
 	# user = soup.find('span', {'class' : 'user-info'}).find('a').text
 	date = dateutil.parser.parse(soup.find('span', {"class": "date"}).find('span', {"class" : "body"}).time['datetime']).astimezone().strftime("%Y-%m-%d %H:%M:%S")
 	view = soup.find_all('span', {"class": "body"})[3].text
 	rate = soup.find('span', {"class": "body"}).text
+	comment_count = 0
 	content = {
 			'index': int(index),
 			# 'user' : user,
@@ -111,41 +115,42 @@ def extract_arca_single(index):
 			'link': anchor,
 			'date': date,
 			'view': view,
-			'rate': rate
+			'rate': rate,
+			'comment_count' : int(comment_count),
 	}
 	contents.append(content)
 	return contents
 
 #*컨텐츠 긁어오기
-def extract_contents(html, inner_bool):
-	index = html.attrs['href'].split('/b/counterside/')[1].split('?')[0]
+def extract_contents(html):
+	index = Extract_index(html)
 	if html.find('span', {"class": "title"}) :
 		title = html.find('span', {"class": "title"}).text
 		user = html.find('span', {'class' : 'user-info'}).span.attrs['data-filter']
 		anchor = f"{GALLARY_URL}/{index}"
 		date = dateutil.parser.parse(html.find('span', {"class": "vcol col-time"}).time['datetime']).astimezone().strftime("%Y-%m-%d %H:%M:%S")
 		view = html.find('span', {"class": "vcol col-view"}).text
-		rate = html.find('span', {"class": "vcol col-rate"}).text
-		if inner_bool:
-			result = requests.get(anchor, headers=headers)
-			soup = BeautifulSoup(result.text, 'html.parser')
-			inner_content = extract_inner_content(soup)
-			inner_comments = extract_inner_comments(soup)
-		else: 
-			inner_content = '[Gathering...]'
-			inner_comments = '[Gathering...]'
-	
+		rate = Extract_rate(html)
+		
+		result = requests.get(anchor, headers=headers)
+		soup = BeautifulSoup(result.text, 'html.parser')
+		inner_content = extract_inner_content(soup)
+		inner_comments = extract_inner_comments(soup)
+		
+		comment_count = Extract_Comment_Count(html)
+
 	else: #!(권한 없음) 예외처리
 		print(html)
 		title = html.find('span', {"class": "vcol col-title"}).i.text
 		print(title)
-		anchor = None
-		date = None
-		rate = 0
 		user = None
-		view = 0
 		inner_content = None
 		inner_comments = None
+		anchor = None
+		date = None
+		view = 0
+		rate = 0
+		comment_count = 0
 
 	return {
 			'index': int(index),
@@ -156,8 +161,16 @@ def extract_contents(html, inner_bool):
 			'link': anchor,
 			'date': date,
 			'view': int(view),
-			'rate': int(rate)
+			'rate': int(rate),
+			'comment_count' : int(comment_count),
 	}
+
+def Extract_Comment_Count(html):
+	if html.find('span', {"class": "comment-count"}):
+		comment_count = html.find('span', {"class": "comment-count"}).text.strip("[]")
+	else:
+		comment_count = 0
+	return comment_count
 
 #*내용 긁어오기
 def extract_inner_content(soup):
@@ -173,7 +186,6 @@ def extract_inner_content(soup):
 #*코멘트 긁어오기
 def extract_inner_comments(soup):
 	comments = []
-	print()
 	result_comments = soup.find('div', {"class": "article-comment"}).find_all('div', {'class' : 'comment-wrapper'})
 	if result_comments:
 		for comment in result_comments:

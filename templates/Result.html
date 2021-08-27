@@ -6,7 +6,7 @@
 	<style>
 		section {
 			display: grid;
-			grid-template-columns: repeat(9, 1fr);
+			grid-template-columns: repeat(10, 1fr);
 		}
 	</style>
 </head>
@@ -26,6 +26,7 @@
 		<h4>date</h4>
 		<h4>view</h4>
 		<h4>rate</h4>
+		<h4>comment_count</h4>
 
 		{% for content in contents %}
 		<span>{{content.index}}</span>
@@ -37,6 +38,7 @@
 		<span>{{content.date}}</span>
 		<span>{{content.view}}</span>
 		<span>{{content.rate}}</span>
+		<span>{{content.comment_count}}</span>
 		{% endfor %}
 	</section>
 </body>
