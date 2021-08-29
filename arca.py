@@ -2,7 +2,7 @@ from xml.dom.minidom import TypeInfo
 import requests, time, random, csv
 from bs4 import BeautifulSoup
 import os.path
-import dateutil.parser
+import dateutil.parser, sys
 from save import save_to_file
 
 # params = {'id': 'studiobside'}
@@ -20,8 +20,6 @@ headers = {
 #*리스트 긁어오기
 def extract_arca_list(start_page, last_page, word):
 	last_page += start_page - 1
-	# result_index_list = list()
-	# result_rate_list = list()
 	result_contents = []
 
 	my_file = f"results/{word}.csv"
@@ -42,11 +40,9 @@ def extract_arca_list(start_page, last_page, word):
 					'comment_count': line['comment_count']
 			}
 			result_contents.append(content)
-		
-		# result_index_list.sort(reverse = True)
-		# last_index = result_index_list[0]
+
 		print(f'{word}\'s Search List')
-		
+
 	for page in range(start_page, last_page + 1):
 		print(f"Processing Page: {page}/{last_page}")
 		result = requests.get(f"{GALLARY_URL}?&p={page}&target=title_content&keyword={word}",headers=headers)
@@ -57,35 +53,46 @@ def extract_arca_list(start_page, last_page, word):
 		CurrentListCount = 0
 		contents = []
 
-		# #* 내부 컨텐츠 생성
+		#* 내부 컨텐츠 생성
 		for result in results:
 			CurrentListCount += 1
+			sys.stdout.write("\033[F")
 			print(f"Extract Contents: {CurrentListCount}/{TotlaListCount}", end='')
 
+
+			#*[2021-08-29 21:55:58] 매칭용 리스트를 생성
+			match_content = {}
 			index = Extract_index(result)
 			rate = Extract_rate(result)
 			comment_count = Extract_Comment_Count(result)
-			
-			match_content = {}
 			for item in result_contents :
 				if item["index"] == index :
 					match_content = item
+
 			#*[2021-08-28 03:44:27] 해당 게시물이 저장되어있고, 추천수가 똑같을 경우 스크랩을 하지 않는다.
 			if match_content and int(float(match_content['rate'])) == int(float(rate)) and int(float(match_content['comment_count'])) == int(float(comment_count)) :
 				print()
 				continue
-
+			
 			content = extract_contents(result)
 			contents.append(content)
-			# break
+			
+			#*[2021-08-29 22:57:42]스크랩 주기 설정하는 부분
 			wait_time = round(random.uniform(1.0,4.0),3)
 			print(f" [{wait_time}]")
 			time.sleep(wait_time)
+			
+			pass
+		save_to_file(contents,word)
+		pass
 	return contents
 
 def Extract_rate(result):
-	rate = result.find('span', {"class": "vcol col-rate"}).text
-	return rate
+	if result.find('span', {"class": "title"}):
+		rate = result.find('span', {"class": "vcol col-rate"}).text
+		return rate
+	else:
+		return 0
 
 def Extract_index(result):
 	index = result.attrs['href'].split('/b/counterside/')[1].split('?')[0]
@@ -123,34 +130,34 @@ def extract_arca_single(index):
 
 #*컨텐츠 긁어오기
 def extract_contents(html):
-	index = Extract_index(html)
-	if html.find('span', {"class": "title"}) :
-		title = html.find('span', {"class": "title"}).text
-		user = html.find('span', {'class' : 'user-info'}).span.attrs['data-filter']
-		anchor = f"{GALLARY_URL}/{index}"
-		date = dateutil.parser.parse(html.find('span', {"class": "vcol col-time"}).time['datetime']).astimezone().strftime("%Y-%m-%d %H:%M:%S")
-		view = html.find('span', {"class": "vcol col-view"}).text
-		rate = Extract_rate(html)
-		
-		result = requests.get(anchor, headers=headers)
-		soup = BeautifulSoup(result.text, 'html.parser')
-		inner_content = extract_inner_content(soup)
-		inner_comments = extract_inner_comments(soup)
-		
-		comment_count = Extract_Comment_Count(html)
-
-	else: #!(권한 없음) 예외처리
+	try:
+		index = Extract_index(html)
+		if html.find('span', {"class": "title"}) :
+			title = html.find('span', {"class": "title"}).text
+			user = html.find('span', {'class' : 'user-info'}).span.attrs['data-filter']
+			anchor = f"{GALLARY_URL}/{index}"
+			date = dateutil.parser.parse(html.find('span', {"class": "vcol col-time"}).time['datetime']).astimezone().strftime("%Y-%m-%d %H:%M:%S")
+			view = html.find('span', {"class": "vcol col-view"}).text
+			rate = Extract_rate(html)
+			result = requests.get(anchor, headers=headers)
+			soup = BeautifulSoup(result.text, 'html.parser')
+			inner_content = extract_inner_content(soup)
+			inner_comments = extract_inner_comments(soup)
+			comment_count = Extract_Comment_Count(html)
+			pass
+		else: #!(권한 없음) 예외처리
+			title = html.find('span', {"class": "vcol col-title"}).i.text
+			user = None
+			anchor = None
+			date = None
+			view = 0
+			rate = 0
+			inner_content = None
+			inner_comments = None
+			comment_count = 0
+			pass
+	except:
 		print(html)
-		title = html.find('span', {"class": "vcol col-title"}).i.text
-		print(title)
-		user = None
-		inner_content = None
-		inner_comments = None
-		anchor = None
-		date = None
-		view = 0
-		rate = 0
-		comment_count = 0
 
 	return {
 			'index': int(index),

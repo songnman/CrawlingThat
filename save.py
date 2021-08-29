@@ -1,6 +1,8 @@
 import csv
 import os.path
 import pandas as pd
+import gspread
+import df2gspread as d2g
 
 def save_to_file(contents, keyword):
     my_file = f"results/{keyword}.csv"
@@ -16,6 +18,7 @@ def save_to_file(contents, keyword):
         combined_csv = combined_csv.sort_values(by=['index'], ascending=False)
         combined_csv.to_csv( my_file, index=False, encoding='utf-8-sig')
         os.remove(f"{keyword}_temp.csv")
+        print("Scrap Complete.")
         return
     else:
         #*신규파일 생성 시퀀스
