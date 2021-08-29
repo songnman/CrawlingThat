@@ -16,7 +16,7 @@ def home():
 
 @app.route("/repeat")
 def repeat():
-	word = request.args.get('word')
+	# word = request.args.get('word')
 	interval = request.args.get('interval', type=int)
 
 	t = Thread(target=threaded, args=[interval])
