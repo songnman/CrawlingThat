@@ -46,6 +46,7 @@ def threaded(interval):
 		for search in search_List:
 			if is_end: break
 			extract_arca_list(1, 1, search)
+			time.sleep(5)
 			pass
 		count += 1
 		print(f'[{count}]Times Repeated.')

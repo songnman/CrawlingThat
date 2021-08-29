@@ -56,7 +56,7 @@ def extract_arca_list(start_page, last_page, word):
 		#* 내부 컨텐츠 생성
 		for result in results:
 			CurrentListCount += 1
-			sys.stdout.write("\033[F")
+			# sys.stdout.write("\033[F")
 			print(f"Extract Contents: {CurrentListCount}/{TotlaListCount}", end='')
 
 
