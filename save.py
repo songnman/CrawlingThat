@@ -4,7 +4,7 @@ import pandas as pd
 import gspread
 import gspread_dataframe as gd
 
-gc = gspread.oauth()
+# gc = gspread.oauth()
 
 def save_to_file(contents, keyword):
 	my_file = f"results/{keyword}.csv"
@@ -20,8 +20,8 @@ def save_to_file(contents, keyword):
 		combined_csv = combined_csv.sort_values(by=['index'], ascending=False)
 		combined_csv.to_csv( my_file, index=False, encoding='utf-8-sig')
 		
-		ws = gc.open("CrawlingThat").worksheet("TEST1")
-		existing = gd.get_as_dataframe(ws)
+		# ws = gc.open("CrawlingThat").worksheet("TEST1")
+		# existing = gd.get_as_dataframe(ws)
 		gd.set_with_dataframe(ws, combined_csv)
 		
 		os.remove(f"{keyword}_temp.csv")
