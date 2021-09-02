@@ -22,7 +22,7 @@ def save_to_file(contents, keyword):
 		
 		# ws = gc.open("CrawlingThat").worksheet("TEST1")
 		# existing = gd.get_as_dataframe(ws)
-		gd.set_with_dataframe(ws, combined_csv)
+		# gd.set_with_dataframe(ws, combined_csv)
 		
 		os.remove(f"{keyword}_temp.csv")
 		print("Scrap Complete.")
