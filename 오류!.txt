@@ -1,0 +1,36 @@
+<a class="vrow" href="/b/counterside/33520746?p=1&amp;target=title_content&amp;keyword=%EC%8B%9C%EA%B7%B8%EB%A7%88">
+<div class="vrow-top">
+<span class="vcol col-id">
+<span>25783</span>
+</span>
+<span class="vcol col-title">
+<span class="badge badge-success"></span>
+<span class="title ion-ios-photos-outline">루시드 목소리 뭔가</span>
+<span class="info">
+<span class="comment-count">[2]</span>
+</span>
+</span>
+</div>
+<div class="vrow-bottom">
+<span class="vcol col-author"><span class="user-info"><span data-filter="우윰">우윰</span> <span class="ion-checkmark-circled" title="고정닉"></span></span></span>
+<span class="vcol col-time">
+<time data-format="Q" datetime="2021-09-07T01:59:51.000Z">2021.09.07</time>
+</span>
+<span class="vcol col-view">108</span>
+<span class="vcol col-rate">0</span>
+</div>
+<div class="vrow-preview"><noscript class="loading-lazy"><img loading="lazy" src="//ac.namu.la/20210827/a38ec44f78e4b1e20f0ec7b738c13e428b5ab3ef5c22612866aecb37f4dacf23.png?type=list"/></noscript></div>
+</a>
+Exception in thread Thread-14:
+Traceback (most recent call last):
+  File "C:\Users\LeeSeungHwan\AppData\Local\Programs\Python\Python38-32\lib\threading.py", line 932, in _bootstrap_inner
+    self.run()
+  File "C:\Users\LeeSeungHwan\AppData\Local\Programs\Python\Python38-32\lib\threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Documents\GitHub\CrawlingThat\main.py", line 48, in threaded
+    extract_arca_list(1, 1, search)
+  File "D:\Documents\GitHub\CrawlingThat\arca.py", line 77, in extract_arca_list
+    content = extract_contents(result)
+  File "D:\Documents\GitHub\CrawlingThat\arca.py", line 167, in extract_contents
+    'comment' : inner_comments,
+UnboundLocalError: local variable 'inner_comments' referenced before assignment
