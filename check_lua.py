@@ -14,7 +14,6 @@ lines = lines.replace('\t','')
 lines = lines.replace('\n','')
 lines = lines.replace('/','/')
 code.close()
-
 # print(lines)
 data = luadata.unserialize(lines,encoding='utf-8-sig')
 # print(data)
@@ -23,6 +22,8 @@ df2 = {}
 df3 = {}
 f = open('TEST1.csv','w', newline='')
 writer = csv.writer(f)
+global StateName
+StateName = "USN_START"
 for k, v in data.items():
 	if isinstance(v, list):
 		for item in v:
@@ -30,17 +31,21 @@ for k, v in data.items():
 				if isinstance(j, list):
 					for item in j:
 						for x, y in item.items():
-								# print(type(y))
 							if isinstance(y, list):
 								for item in y:
-									print(type(item))
-									writer.writerow([k,i,x,item])
+									writer.writerow([k,None,i,x,item])
+							elif isinstance(y, dict):
+								for a, b in y.items():
+									writer.writerow([k,i,x,a,b])
 							else:
-								writer.writerow([k,i,x,y])
+								writer.writerow([k,None,i,x,y])
+				elif isinstance(j, dict):
+					for a, b in j.items():
+						writer.writerow([k,None,i,a,b])
 				else:
-					writer.writerow([k,i,j,None])
+					writer.writerow([k,None,None,i,j])
 	else:
-		writer.writerow([k,v,None,None])
+		writer.writerow([None,None,None,k,v])
 
 # dict1 = data
 # df = pd.DataFrame(data=dict1, index=[0])
