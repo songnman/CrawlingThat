@@ -25,13 +25,13 @@ def save_to_file(contents, keyword):
 		# gd.set_with_dataframe(ws, combined_csv)
 		
 		os.remove(f"{keyword}_temp.csv")
-		print("Scrap Complete.")
+		print("\nScrap Complete.")
 		return
 	else:
 		#*신규파일 생성 시퀀스
 		file = open(my_file, mode="w", encoding='utf-8-sig', newline='')
 		write_row(contents,file)
-		print(f"{file} is Created.")
+		print(f"\n{file} is Created.")
 		return
 
 def write_row(contents, file):

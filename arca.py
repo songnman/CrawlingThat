@@ -57,7 +57,8 @@ def extract_arca_list(start_page, last_page, word):
 		for result in results:
 			CurrentListCount += 1
 			# sys.stdout.write("\033[F")
-			print(f"Extract Contents: {CurrentListCount}/{TotlaListCount}", end='')
+			# sys.stdout.flush()
+			print(f"\rExtract Contents: {CurrentListCount}/{TotlaListCount}", end='', flush = True)
 
 
 			#*[2021-08-29 21:55:58] 매칭용 리스트를 생성
@@ -71,7 +72,7 @@ def extract_arca_list(start_page, last_page, word):
 
 			#*[2021-08-28 03:44:27] 해당 게시물이 저장되어있고, 추천수가 똑같을 경우 스크랩을 하지 않는다.
 			if match_content and int(float(match_content['rate'])) == int(float(rate)) and int(float(match_content['comment_count'])) == int(float(comment_count)) :
-				print()
+				print('\r',end='')
 				continue
 			
 			content = extract_contents(result)
@@ -79,7 +80,7 @@ def extract_arca_list(start_page, last_page, word):
 			
 			#*[2021-08-29 22:57:42]스크랩 주기 설정하는 부분
 			wait_time = round(random.uniform(1.0,4.0),3)
-			print(f" [{wait_time}]")
+			print(f" [{wait_time}]", end='\n')
 			time.sleep(wait_time)
 			
 			pass
