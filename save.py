@@ -4,7 +4,7 @@ import pandas as pd
 import re
 
 def save_to_file(contents, keyword):
-	keyword = re.sub("[\/:*?\"<>|]", "", keyword) #[2021-12-07 01:21:15] 파일 이름 수정
+	# keyword = re.sub("[\/:*?\"<>|]", "", keyword) #[2021-12-07 01:21:15] 파일 이름 수정
 	my_file = f"results/{keyword}.csv"
 	if os.path.exists(my_file):
 		#*머지 시퀀스

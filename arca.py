@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import os.path
 import dateutil.parser, sys
 from save import save_to_file
+import re
 
 # params = {'id': 'studiobside'}
 
@@ -22,9 +23,10 @@ def extract_arca_list(start_page, last_page, word):
 	last_page += start_page - 1
 	result_contents = []
 
-	my_file = f"results/{word}.csv"
+	file_word = re.sub("[\/:*?\"<>|]", "", word)#[2021-12-07 10:02:56]파일 이름 수정 로드 / 세이브 모두 대응
+	my_file = f"results/{file_word}.csv"
 	if os.path.exists(my_file):
-		f = open(f"results/{word}.csv",'r', encoding='utf-8-sig', newline='')
+		f = open(f"results/{file_word}.csv",'r', encoding='utf-8-sig', newline='')
 		rdr = csv.DictReader(f)
 		for line in rdr:
 			content = {
@@ -84,7 +86,7 @@ def extract_arca_list(start_page, last_page, word):
 			time.sleep(wait_time)
 			
 			pass
-		save_to_file(contents,word)
+		save_to_file(contents,file_word)
 		pass
 	return contents
 
