@@ -1,7 +1,7 @@
 # from dc_inside import extract_dc_contents
 from datetime import datetime, timezone
 from flask import Flask, render_template, request, redirect, send_file
-from arca import extract_arca_list, extract_arca_single
+from arca import extract_arca_list, extract_arca_single, email_alert
 from save import save_to_file
 from threading import Thread
 import time, os.path
@@ -50,6 +50,7 @@ def threaded(interval):
 			pass
 		count += 1
 		print(f'[{count}]Times Repeated.')
+		email_alert(f"{count}Times Scrap Repeated.","", "songnman@gmail.com" )
 		spend_minute(interval)
 	print("Stoped!")
 

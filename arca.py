@@ -1,10 +1,27 @@
-from xml.dom.minidom import TypeInfo
 import requests, time, random, csv
 from bs4 import BeautifulSoup
 import os.path
-import dateutil.parser, sys
+import dateutil.parser
 from save import save_to_file
 import re
+import smtplib
+from email.message import EmailMessage
+
+def email_alert(subject, body, to):
+	msg = EmailMessage()
+	msg.set_content(body)
+	msg['subject'] = subject
+	msg['to'] = to
+	
+	user = "songnman+python@gmail.com"
+	msg['from'] = user
+	password = "dwkajyynglqfaehn"
+	
+	server = smtplib.SMTP("smtp.gmail.com", 587)
+	server.starttls()
+	server.login(user, password)
+	server.send_message(msg)
+	server.quit
 
 # params = {'id': 'studiobside'}
 
