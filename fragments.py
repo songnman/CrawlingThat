@@ -23,8 +23,8 @@ def extract_keyword_count():
 		for i in item:
 			comment_list.append(i['comment'])
 	
-	# all_list = title_list + content_list2 + comment_list
-	all_list = title_list
+	all_list = title_list + content_list2 + comment_list
+	# all_list = title_list
 	
 	delete_list = []
 	list_file = "Delete_List.csv"
@@ -34,13 +34,11 @@ def extract_keyword_count():
 		for line in rdr:
 			delete_list.append(str(line[0]))
 	
-	print(delete_list)
 	result_noun_list = ''.join(all_list) #*스트링 하나로 결합
 	result_noun_list = result_noun_list.replace(string.punctuation,"").replace(",","").replace("'","").replace('"','') #*[2021-12-09 16:04:29] 제거 되기 어려운 부분들 새로 추가
 	for x in range(len(delete_list)) :
 		result_noun_list = result_noun_list.replace(delete_list[x],"") #*[2021-12-09 16:04:16]제외되는 부분을 외부 csv 파일로 변경
 	result = result_noun_list #*제외된 문자로 적용
-	print(result)
 	
 	result_noun_list = result_noun_list.split(' ') #* 스트링을 다시 LIST로 결합
 	result_noun_list = list(set(result_noun_list)) #*결합된 스트링에서 중복값 삭제
