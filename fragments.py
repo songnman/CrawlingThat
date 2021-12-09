@@ -52,3 +52,5 @@ def extract_keyword_count():
 	for x in range(len(result_noun_list)):
 		if(result_noun_list[x] in deny_list or len(result_noun_list[x]) < 2 ):continue
 		writer.writerow([result_noun_list[x],result.count(result_noun_list[x])])
+		
+		##TODO 이제 날짜별, 테마별로 묶어서 결과값 내보내는 과정이 필요함. Date로 검색범위 설정? 웹에서 날짜 고르면 결과 확인 가능하게 만들 수 있을까?
