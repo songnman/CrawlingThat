@@ -27,19 +27,18 @@ for item in comment_dict:
 # all_list = title_list + content_list2 + comment_list
 all_list = title_list
 
-# print(' '.join(all_list).split(' '))
-myset = set(all_list)
-result_noun_list = list(myset)
-result_noun_list = ''.join(all_list)
-result_noun_list = re.sub("\!|\'|\?|\)|\(|\.", "", result_noun_list)
+result_noun_list = ''.join(all_list) #*스트링 하나로 결합
+result_noun_list = re.sub("\!|\'|\?|\)|\(|\.", "", result_noun_list) #*결합된 스트링에서 특정 문자 제외
+result = result_noun_list #*제외된 문자로 적용
 
-result = result_noun_list
-result_noun_list = result_noun_list.split(' ')
-
-print(result.count(result_noun_list[25]))
+result_noun_list = result_noun_list.split(' ') #* 스트링을 다시 LIST로 결합
+result_noun_list = list(set(result_noun_list)) #*결합된 스트링에서 중복값 삭제
 
 my_file = 'test.csv'
+if os.path.exists(my_file):
+	os.remove('test.csv')
 f = open(my_file,'w', newline='', encoding='utf-8-sig')
 writer = csv.writer(f)
+
 for x in range(len(result_noun_list)):
 	writer.writerow([result_noun_list[x],result.count(result_noun_list[x])])
