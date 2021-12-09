@@ -45,7 +45,7 @@ def threaded(interval):
 		print(f"Searching List: {search_List}")
 		for search in search_List:
 			if is_end: break
-			extract_arca_list(1, 1, search)
+			extract_arca_list(1, 2, search)
 			time.sleep(5)
 			pass
 		count += 1
