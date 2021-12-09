@@ -41,6 +41,7 @@ def extract_arca_list(start_page, last_page, word):
 	result_contents = []
 
 	file_word = re.sub("[\/:*?\"<>|]", "", word)#[2021-12-07 10:02:56]파일 이름 수정 로드 / 세이브 모두 대응
+	if(file_word == " ") : file_word = "All_result"
 	my_file = f"results/{file_word}.csv"
 	if os.path.exists(my_file):
 		f = open(f"results/{file_word}.csv",'r', encoding='utf-8-sig', newline='')
@@ -65,6 +66,7 @@ def extract_arca_list(start_page, last_page, word):
 	for page in range(start_page, last_page + 1):
 		print(f"Processing Page: {page}/{last_page}")
 		result = requests.get(f"{GALLARY_URL}?&p={page}&target=title_content&keyword={word}",headers=headers)
+		if(word == " ") : result = requests.get(f"{GALLARY_URL}?&p={page}&target=title_content",headers=headers)
 		soup = BeautifulSoup(result.text, 'html.parser')
 		results = soup.find('div', {"class": "list-table"}).find_all(lambda tag: tag.name == 'a' and tag.get('class') == ['vrow'])
 
