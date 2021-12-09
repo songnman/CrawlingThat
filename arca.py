@@ -66,7 +66,7 @@ def extract_arca_list(start_page, last_page, word):
 	for page in range(start_page, last_page + 1):
 		print(f"Processing Page: {page}/{last_page}")
 		result = requests.get(f"{GALLARY_URL}?&p={page}&target=title_content&keyword={word}",headers=headers)
-		if(word == " ") : result = requests.get(f"{GALLARY_URL}?&p={page}&target=title_content",headers=headers)
+		if(word == " ") : result = requests.get(f"{GALLARY_URL}?&p={page}",headers=headers)
 		soup = BeautifulSoup(result.text, 'html.parser')
 		results = soup.find('div', {"class": "list-table"}).find_all(lambda tag: tag.name == 'a' and tag.get('class') == ['vrow'])
 
