@@ -1,12 +1,16 @@
 import os.path
-from os import listdir
-from os.path import isfile, join, splitext, exists
+# from os import listdir
+# from os.path import isfile, join, splitext, exists
 import pandas as pd
 import csv
 import string
-def extract_keyword_count():
+def extract_keyword_count(d1):
+	my_file = f"results/Daily_Results/{d1}.csv"
+	if not os.path.exists(my_file): print(f"No such file : \"{my_file}\"")
+	
 	# csv_list = [join('results\\',f) for f in listdir('results\\') ]
-	csv_list = ['results\\All_result.csv']
+	# csv_list = ['results\\All_result.csv']
+	csv_list = [my_file]
 	
 	combined_csv = pd.concat([pd.read_csv(f) for f in csv_list ])
 	title_list = combined_csv['title'].tolist()
@@ -43,13 +47,6 @@ def extract_keyword_count():
 	result_noun_list = result_noun_list.split(' ') #* 스트링을 다시 LIST로 결합
 	result_only_list = list(set(result_noun_list)) #*결합된 스트링에서 중복값 삭제
 	
-	my_file = 'test.csv'
-	if os.path.exists(my_file):
-		os.remove(my_file)
-	f = open(my_file, mode="w", encoding='utf-8-sig', newline='')
-	writer = csv.writer(f)
-	writer.writerow(["Keyword","count"])
-	
 	deny_list = []
 	list_file = "Deny_List.csv"
 	if os.path.exists(list_file):
@@ -66,11 +63,27 @@ def extract_keyword_count():
 		for line in rdr:
 			noun_filter.append(line[0])
 	
-	for x in range(len(result_only_list)):
-		if(result_only_list[x] in deny_list or len(result_only_list[x]) < 2 or len(result_only_list[x]) > 10):continue
-		temp_list = []
-		# if(result_only_list[x])
-		writer.writerow([result_only_list[x],result_noun_list.count(result_only_list[x])])
-extract_keyword_count()
+	my_file = f"results/Daily_Results_Count/{d1}.csv"
+	if os.path.exists(my_file):
+		os.remove(my_file)
+	f = open(my_file, mode="w", encoding='utf-8-sig', newline='')
+	writer = csv.writer(f)
+	writer.writerow(["Keyword","count"])
+	
+	TotalCount = len(result_only_list)
+	CurrentCount = 0
+	for noun in result_only_list:
+		CurrentCount += 1
+		print(f"[{CurrentCount}/{TotalCount}] Progressing \r", end='', flush = True)
+		if(noun in deny_list or len(noun) < 2 or len(noun) > 10):continue
+		
+		# noun_count = 0
+		# for item in noun_filter:
+		# 	if(noun+item in result_noun_list): noun_count += 1
+		# writer.writerow([noun,noun_count])
+		
+		writer.writerow([noun,result_noun_list.count(noun)])
+		pass
+	print("", end='\n')
 #TODO 이제 날짜별, 테마별로 묶어서 결과값 내보내는 과정이 필요함. Date로 검색범위 설정? 웹에서 날짜 고르면 결과 확인 가능하게 만들 수 있을까?
 #* 조사 삭제 or 포함 하는부분이 필요함 (https://ratsgo.github.io/korean%20linguistics/2017/03/15/words/)

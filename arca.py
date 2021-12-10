@@ -6,6 +6,8 @@ from save import save_to_file
 import re
 import smtplib
 from email.message import EmailMessage
+from datetime import date
+from fragments import extract_keyword_count
 
 def email_alert(subject, body, to):
 	msg = EmailMessage()
@@ -41,7 +43,10 @@ def extract_arca_list(start_page, last_page, word):
 	result_contents = []
 
 	file_word = re.sub("[\/:*?\"<>|]", "", word)#[2021-12-07 10:02:56]파일 이름 수정 로드 / 세이브 모두 대응
-	if(file_word == " ") : file_word = "All_result"
+	if(word == "All_Time") :
+		d1 = date.today().strftime("%Y%m%d")
+		file_word = f"Daily_Results/{d1}"
+		pass
 	my_file = f"results/{file_word}.csv"
 	if os.path.exists(my_file):
 		f = open(f"results/{file_word}.csv",'r', encoding='utf-8-sig', newline='')
@@ -60,13 +65,13 @@ def extract_arca_list(start_page, last_page, word):
 					'comment_count': line['comment_count']
 			}
 			result_contents.append(content)
-
 		print(f'{word}\'s Search List')
+		pass
 
 	for page in range(start_page, last_page + 1):
 		print(f"Processing Page: {page}/{last_page}")
-		result = requests.get(f"{GALLARY_URL}?&p={page}&target=title_content&keyword={word}",headers=headers)
-		if(word == " ") : result = requests.get(f"{GALLARY_URL}?&p={page}",headers=headers)
+		if(word == "All_Time") : result = requests.get(f"{GALLARY_URL}?&p={page}",headers=headers)
+		else : result = requests.get(f"{GALLARY_URL}?&p={page}&target=title_content&keyword={word}",headers=headers)
 		soup = BeautifulSoup(result.text, 'html.parser')
 		results = soup.find('div', {"class": "list-table"}).find_all(lambda tag: tag.name == 'a' and tag.get('class') == ['vrow'])
 
@@ -103,9 +108,9 @@ def extract_arca_list(start_page, last_page, word):
 			wait_time = round(random.uniform(1.0,7.0),3)
 			print(f" [{wait_time}]", end='\n')
 			time.sleep(wait_time)
-			
 			pass
 		save_to_file(contents,file_word)
+		if(word == "All_Time") : extract_keyword_count(d1)
 		pass
 	return contents
 

@@ -5,7 +5,6 @@ from arca import extract_arca_list, extract_arca_single, email_alert
 from save import save_to_file
 from threading import Thread
 import time, os.path
-from fragments import extract_keyword_count
 
 app = Flask("WebScrapper")
 
@@ -46,11 +45,10 @@ def threaded(interval):
 		print(f"Searching List: {search_List}")
 		for search in search_List:
 			if is_end: break
-			extract_arca_list(1, 2, search)
+			extract_arca_list(1, 1, search)
 			time.sleep(5)
 			pass
 		count += 1
-		extract_keyword_count()
 		print(f'[{count}]Times Repeated.')
 		if(count%10 == 0) : email_alert(f"{count}Times Scrap Repeated.","", "songnman@gmail.com" )
 		spend_minute(interval)
