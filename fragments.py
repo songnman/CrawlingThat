@@ -41,7 +41,7 @@ def extract_keyword_count():
 	result = result_noun_list #*제외된 문자로 적용
 	
 	result_noun_list = result_noun_list.split(' ') #* 스트링을 다시 LIST로 결합
-	result_noun_list = list(set(result_noun_list)) #*결합된 스트링에서 중복값 삭제
+	result_only_list = list(set(result_noun_list)) #*결합된 스트링에서 중복값 삭제
 	
 	my_file = 'test.csv'
 	if os.path.exists(my_file):
@@ -58,8 +58,19 @@ def extract_keyword_count():
 		for line in rdr:
 			deny_list.append(line[0])
 	
-	for x in range(len(result_noun_list)):
-		if(result_noun_list[x] in deny_list or len(result_noun_list[x]) < 2 ):continue
-		writer.writerow([result_noun_list[x],result.count(result_noun_list[x])])
-		
-		##TODO 이제 날짜별, 테마별로 묶어서 결과값 내보내는 과정이 필요함. Date로 검색범위 설정? 웹에서 날짜 고르면 결과 확인 가능하게 만들 수 있을까?
+	noun_filter = []
+	list_file = "Noun_Filter.csv"
+	if os.path.exists(list_file):
+		csvfile = open(list_file,'r', encoding='utf-8-sig', newline='')
+		rdr = csv.reader(csvfile)
+		for line in rdr:
+			noun_filter.append(line[0])
+	
+	for x in range(len(result_only_list)):
+		if(result_only_list[x] in deny_list or len(result_only_list[x]) < 2 or len(result_only_list[x]) > 10):continue
+		temp_list = []
+		# if(result_only_list[x])
+		writer.writerow([result_only_list[x],result_noun_list.count(result_only_list[x])])
+extract_keyword_count()
+#TODO 이제 날짜별, 테마별로 묶어서 결과값 내보내는 과정이 필요함. Date로 검색범위 설정? 웹에서 날짜 고르면 결과 확인 가능하게 만들 수 있을까?
+#* 조사 삭제 or 포함 하는부분이 필요함 (https://ratsgo.github.io/korean%20linguistics/2017/03/15/words/)
