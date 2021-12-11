@@ -17,13 +17,13 @@ def home():
 @app.route("/repeat")
 def repeat():
 	# word = request.args.get('word')
-	interval = request.args.get('interval', type=int)
+	# interval = request.args.get('interval', type=int)
+	interval = 10
 
 	t = Thread(target=threaded, args=[interval])
 	t.daemon = True
 	t.start()
-	return render_template("Search.html", repeat_interval=interval)
-
+	# return render_template("Search.html", repeat_interval=interval)
 def threaded(interval):
 	
 	#*[2021-08-29 22:00:03] 서치리스트 생성
@@ -113,4 +113,5 @@ def export():
 # def contact(username):
 #	 return f"this is {username}"
 
+repeat()
 app.run("0.0.0.0")

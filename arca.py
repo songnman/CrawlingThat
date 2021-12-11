@@ -185,7 +185,7 @@ def extract_contents(html):
 			pass
 	except:
 		print(html)
-		email_alert("Error has been occured. Check out.",html, "songnman@gmail.com" )
+		email_alert("Error has been occured. Check out.",html.text, "songnman@gmail.com" )
 
 	return {
 			'index': int(index),
