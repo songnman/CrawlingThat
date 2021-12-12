@@ -183,9 +183,18 @@ def extract_contents(html):
 			inner_comments = None
 			comment_count = 0
 			pass
-	except:
-		print(html)
-		email_alert("Error has been occured. Check out.",html.text, "songnman@gmail.com" )
+	except Exception as e :
+		title = "Error"
+		user = None
+		anchor = None
+		date = None
+		view = 0
+		rate = 0
+		inner_content = None
+		inner_comments = None
+		comment_count = 0
+		print(e+"\n"+html.text)
+		email_alert("Error has been occured. Check out.",e+"\n"+html.text, "songnman@gmail.com" )
 
 	return {
 			'index': int(index),
