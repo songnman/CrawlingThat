@@ -162,7 +162,7 @@ def extract_contents(html):
 		if html.find('span', {"class": "title"}) :
 			title = html.find('span', {"class": "title"}).text
 			user = html.find('span', {'class' : 'user-info'}).span.attrs['data-filter']
-			anchor = f"{GALLARY_URL}/{index} "
+			anchor = f"{GALLARY_URL}/{index}"
 			date = dateutil.parser.parse(html.find('span', {"class": "vcol col-time"}).time['datetime']).astimezone().strftime("%Y-%m-%d %H:%M:%S")
 			view = html.find('span', {"class": "vcol col-view"}).text
 			rate = Extract_rate(html)
