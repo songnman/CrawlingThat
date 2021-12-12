@@ -25,7 +25,8 @@ def extract_keyword_count(d1):
 		if isinstance(item,str): item = eval(item)
 		else : continue
 		for i in item:
-			comment_list.append(i['comment'].replace('"','').replace('\n',''))
+			comment_list.append(i['comment'])
+
 	
 	all_list = title_list + content_list2 + comment_list
 	# all_list = title_list
@@ -38,13 +39,13 @@ def extract_keyword_count(d1):
 		for line in rdr:
 			delete_list.append(str(line[0]))
 	
-	result_noun_list = ''.join(all_list) #*스트링 하나로 결합
-	result_noun_list = result_noun_list.replace(string.punctuation,"").replace(",","").replace("'","").replace('"','') #*[2021-12-09 16:04:29] 제거 되기 어려운 부분들 새로 추가
+	result_noun_list = ' '.join(all_list) #*스트링 하나로 결합
+	result_noun_list = result_noun_list.replace(string.punctuation,"").replace(",","").replace("'","").replace('"','').replace('\n',' ').replace(' ',' ') #*[2021-12-09 16:04:29] 제거 되기 어려운 부분들 새로 추가
 	for x in range(len(delete_list)) :
 		result_noun_list = result_noun_list.replace(delete_list[x],"") #*[2021-12-09 16:04:16]제외되는 부분을 외부 csv 파일로 변경
-	
+	result = result_noun_list
 	result_noun_list = result_noun_list.split(' ') #* 스트링을 다시 LIST로 결합
-	result_only_list = list(set(result_noun_list)) #*결합된 스트링에서 중복값 삭제
+	result_only_list = set(result_noun_list) #*결합된 스트링에서 중복값 삭제
 	
 	deny_list = []
 	list_file = "Deny_List.csv"
@@ -74,14 +75,8 @@ def extract_keyword_count(d1):
 	for noun in result_only_list:
 		CurrentCount += 1
 		print(f"[{CurrentCount}/{TotalCount}] Progressing \r", end='', flush = True)
-		if(noun in deny_list or len(noun) < 2 or len(noun) > 10):continue
-		
-		# noun_count = 0
-		# for item in noun_filter:
-		# 	if(noun+item in result_noun_list): noun_count += 1
-		# writer.writerow([noun,noun_count])
-		
-		writer.writerow([noun,result_noun_list.count(noun)])
+		if(noun in deny_list or len(noun) < 2 or len(noun) > 8):continue
+		writer.writerow([noun,sum(noun in s for s in result_noun_list)])
 		pass
 	print("", end='\n')
 #TODO 이제 날짜별, 테마별로 묶어서 결과값 내보내는 과정이 필요함. Date로 검색범위 설정? 웹에서 날짜 고르면 결과 확인 가능하게 만들 수 있을까?
