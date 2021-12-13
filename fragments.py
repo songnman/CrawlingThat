@@ -38,14 +38,6 @@ def extract_keyword_count(d1):
 		for line in rdr:
 			delete_list.append(str(line[0]))
 	
-	result_noun_list = ' '.join(all_list) #*스트링 하나로 결합
-	result_noun_list = result_noun_list.replace(string.punctuation,"").replace(",","").replace("'","").replace('"','').replace('\n',' ').replace(' ',' ') #*[2021-12-09 16:04:29] 제거 되기 어려운 부분들 새로 추가
-	for x in range(len(delete_list)) :
-		result_noun_list = result_noun_list.replace(delete_list[x],"") #*[2021-12-09 16:04:16]제외되는 부분을 외부 csv 파일로 변경
-	result = result_noun_list
-	result_noun_list = result_noun_list.split(' ') #* 스트링을 다시 LIST로 결합
-	result_only_list = set(result_noun_list) #*결합된 스트링에서 중복값 삭제
-	
 	deny_list = []
 	list_file = "Deny_List.csv"
 	if os.path.exists(list_file):
@@ -61,6 +53,14 @@ def extract_keyword_count(d1):
 		rdr = csv.reader(csvfile)
 		for line in rdr:
 			noun_filter.append(line[0])
+	csvfile.close()
+	
+	result_noun_list = ' '.join(all_list) #*스트링 하나로 결합
+	result_noun_list = result_noun_list.replace(string.punctuation,"").replace(",","").replace("'","").replace('"','').replace('\n',' ').replace(' ',' ') #*[2021-12-09 16:04:29] 제거 되기 어려운 부분들 새로 추가
+	for x in range(len(delete_list)) :
+		result_noun_list = result_noun_list.replace(delete_list[x],"") #*[2021-12-09 16:04:16]제외되는 부분을 외부 csv 파일로 변경
+	result_noun_list = result_noun_list.split(' ') #* 스트링을 다시 LIST로 결합
+	result_only_list = set(result_noun_list) #*결합된 스트링에서 중복값 삭제
 	
 	my_file = f"results/Daily_Results_Count/{d1}.csv"
 	if os.path.exists(my_file):
@@ -69,7 +69,6 @@ def extract_keyword_count(d1):
 	writer = csv.writer(f)
 	writer.writerow(["Keyword","count"])
 	
-	wc_list = []
 	TotalCount = len(result_only_list)
 	CurrentCount = 0
 	for noun in result_only_list:
@@ -77,15 +76,27 @@ def extract_keyword_count(d1):
 		print(f"[{CurrentCount}/{TotalCount}] Progressing \r", end='', flush = True)
 		noun_count = sum(noun in s for s in result_noun_list)
 		if(noun in deny_list or len(noun) < 2 or len(noun) > 8 or noun_count < 2):continue
-		wc_list.append([noun, noun_count])
 		writer.writerow([noun,noun_count])
 		pass
+	f.close()
 	print("", end='\n')
+	CreateWC(d1)
 
-	wc = WordCloud(font_path='Pretendard-ExtraBold.ttf', background_color= 'white', width= 1000, height= 1000, max_words= 100, max_font_size= 300, min_font_size= 10)
+def CreateWC(d1):
+	wc_list = []
+	my_file = f"results/Daily_Results_Count/{d1}.csv"
+	if os.path.exists(my_file):
+		f = open(my_file, mode="r", encoding='utf-8-sig', newline='')
+		rdr = csv.reader(f); next(rdr)
+		for line in rdr: wc_list.append([line[0],int(line[1])])
+		f.close()
+	wc = WordCloud(font_path='Pretendard-ExtraBold.ttf',	background_color= 'white',
+	width= 1000, height= 1000, max_words= 200, max_font_size= 300, min_font_size= 20)
 	wc.generate_from_frequencies(dict(wc_list))
 	wc.to_file(f'results/WordCloud/{d1}.png')
+	#*https://amueller.github.io/word_cloud/generated/wordcloud.WordCloud.html
 
 #TODO 이제 날짜별, 테마별로 묶어서 결과값 내보내는 과정이 필요함. Date로 검색범위 설정? 웹에서 날짜 고르면 결과 확인 가능하게 만들 수 있을까?
 #* 조사 삭제 or 포함 하는부분이 필요함 (https://ratsgo.github.io/korean%20linguistics/2017/03/15/words/)
 # extract_keyword_count(20211213)
+# CreateWC(20211213)
