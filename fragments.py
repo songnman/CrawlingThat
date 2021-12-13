@@ -1,9 +1,8 @@
 import os.path
-# from os import listdir
-# from os.path import isfile, join, splitext, exists
 import pandas as pd
 import csv
 import string
+from wordcloud import WordCloud
 def extract_keyword_count(d1):
 	my_file = f"results/Daily_Results/{d1}.csv"
 	if not os.path.exists(my_file): print(f"No such file : \"{my_file}\"")
@@ -70,6 +69,7 @@ def extract_keyword_count(d1):
 	writer = csv.writer(f)
 	writer.writerow(["Keyword","count"])
 	
+	wc_list = []
 	TotalCount = len(result_only_list)
 	CurrentCount = 0
 	for noun in result_only_list:
@@ -77,9 +77,15 @@ def extract_keyword_count(d1):
 		print(f"[{CurrentCount}/{TotalCount}] Progressing \r", end='', flush = True)
 		noun_count = sum(noun in s for s in result_noun_list)
 		if(noun in deny_list or len(noun) < 2 or len(noun) > 8 or noun_count < 2):continue
+		wc_list.append([noun, noun_count])
 		writer.writerow([noun,noun_count])
 		pass
 	print("", end='\n')
+
+	wc = WordCloud(font_path='Pretendard-ExtraBold.ttf', background_color= 'white', width= 1000, height= 1000, max_words= 100, max_font_size= 300, min_font_size= 10)
+	wc.generate_from_frequencies(dict(wc_list))
+	wc.to_file('wc_test.png')
+
 #TODO 이제 날짜별, 테마별로 묶어서 결과값 내보내는 과정이 필요함. Date로 검색범위 설정? 웹에서 날짜 고르면 결과 확인 가능하게 만들 수 있을까?
 #* 조사 삭제 or 포함 하는부분이 필요함 (https://ratsgo.github.io/korean%20linguistics/2017/03/15/words/)
-# extract_keyword_count(20211211)
+# extract_keyword_count(20211213)
