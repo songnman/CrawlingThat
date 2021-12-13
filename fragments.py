@@ -84,7 +84,7 @@ def extract_keyword_count(d1):
 
 	wc = WordCloud(font_path='Pretendard-ExtraBold.ttf', background_color= 'white', width= 1000, height= 1000, max_words= 100, max_font_size= 300, min_font_size= 10)
 	wc.generate_from_frequencies(dict(wc_list))
-	wc.to_file('wc_test.png')
+	wc.to_file(f'results/WordCloud/{d1}.png')
 
 #TODO 이제 날짜별, 테마별로 묶어서 결과값 내보내는 과정이 필요함. Date로 검색범위 설정? 웹에서 날짜 고르면 결과 확인 가능하게 만들 수 있을까?
 #* 조사 삭제 or 포함 하는부분이 필요함 (https://ratsgo.github.io/korean%20linguistics/2017/03/15/words/)
