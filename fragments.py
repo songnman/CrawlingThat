@@ -71,13 +71,17 @@ def extract_keyword_count(d1):
 	
 	TotalCount = len(result_only_list)
 	CurrentCount = 0
+	result_merge_list = [] #* [2021-12-14 02:25:44] 바로 내려적지 않고, 리스트로 묶어서 처리
 	for noun in result_only_list:
 		CurrentCount += 1
 		print(f"[{CurrentCount}/{TotalCount}] Progressing \r", end='', flush = True)
 		noun_count = sum(noun in s for s in result_noun_list)
 		if(noun in deny_list or len(noun) < 2 or len(noun) > 8 or noun_count < 2):continue
-		writer.writerow([noun,noun_count])
+		result_merge_list.append([noun,noun_count])
 		pass
+	result_merge_list.sort(key=lambda x : x[1], reverse= True) #*[2021-12-14 02:24:19] 배열 그룹의 [1]를 내림차순으로 정렬
+	for item in result_merge_list:
+		writer.writerow(item)
 	f.close()
 	print("", end='\n')
 	CreateWC(d1)
