@@ -193,9 +193,8 @@ def extract_contents(html):
 		inner_content = None
 		inner_comments = None
 		comment_count = 0
-		print(e+"\n"+html.text)
 		try:
-			email_alert("Error has been occured. Check this out.",html.text + e, "songnman@gmail.com")
+			email_alert("Error has been occured. Check this out.",html.text + e.text, "songnman@gmail.com")
 		except:
 			email_alert("Error has been occured. Check this out.",html.text, "songnman@gmail.com")
 
@@ -233,17 +232,20 @@ def extract_inner_content(soup):
 #*코멘트 긁어오기
 def extract_inner_comments(soup):
 	comments = []
-	result_comments = soup.find('div', {"class": "article-comment"}).find_all('div', {'class' : 'comment-wrapper'})
-	if result_comments:
-		for comment in result_comments:
-			dic = {}
-			if comment.find('div', {'class' : 'text'}):
-				dic['user'] = comment.find(attrs={"data-filter":True})['data-filter']
-				dic['comment'] = comment.find('div', {'class' : 'text'}).text
-			else :
-				dic['user'] = comment.find(attrs={"data-filter":True})['data-filter']
-				dic['comment'] = '(emoticon)'
-			comments.append(dic)
-		return comments
+	if soup != None :
+		result_comments = soup.find('div', {"class": "article-comment"}).find_all('div', {'class' : 'comment-wrapper'})
+		if result_comments:
+			for comment in result_comments:
+				dic = {}
+				if comment.find('div', {'class' : 'text'}):
+					dic['user'] = comment.find(attrs={"data-filter":True})['data-filter']
+					dic['comment'] = comment.find('div', {'class' : 'text'}).text
+				else :
+					dic['user'] = comment.find(attrs={"data-filter":True})['data-filter']
+					dic['comment'] = '(emoticon)'
+				comments.append(dic)
+			return comments
+		else:
+				return None
 	else:
 			return None
