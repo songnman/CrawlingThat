@@ -97,7 +97,9 @@ def extract_arca_list(start_page, last_page, word):
 					match_content = item
 
 			#*[2021-08-28 03:44:27] 해당 게시물이 저장되어있고, 추천수가 똑같을 경우 스크랩을 하지 않는다.
-			if match_content and int(float(match_content['rate'])) == int(float(rate)) and int(float(match_content['comment_count'])) == int(float(comment_count)) :
+			# if match_content and int(float(match_content['rate'])) == int(float(rate)) and int(float(match_content['comment_count'])) == int(float(comment_count)) :
+			#*[2021-12-14 09:58:53] 게시물 인덱스만 있어도 스크랩 패스하도록 수정... 너무 오래걸려, 키워드 서칭에는 깊게 긁어올 필요 없을듯함.
+			if match_content:
 				print('\r',end='')
 				continue
 			
