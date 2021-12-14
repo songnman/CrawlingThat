@@ -107,7 +107,7 @@ def extract_arca_list(start_page, last_page, word):
 			contents.append(content)
 			
 			#*[2021-08-29 22:57:42]스크랩 주기 설정하는 부분
-			wait_time = round(random.uniform(1.0,7.0),3)
+			wait_time = round(random.uniform(1.0,5.0),3)
 			print(f" [{wait_time}]", end='\n')
 			time.sleep(wait_time)
 			pass
