@@ -18,7 +18,7 @@ def home():
 def repeat():
 	# word = request.args.get('word')
 	# interval = request.args.get('interval', type=int)
-	interval = 10
+	interval = 5
 
 	t = Thread(target=threaded, args=[interval])
 	t.daemon = True
