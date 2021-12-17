@@ -50,7 +50,7 @@ def threaded(interval):
 			pass
 		count += 1
 		print(f'[{count}]Times Repeated.')
-		if(count%20 == 0) : email_alert(f"{count}Times Scrap Repeated.","", "songnman@gmail.com" )
+		if(count%50 == 0) : email_alert(f"{count}Times Scrap Repeated.","", "songnman@gmail.com" )
 		spend_minute(interval)
 	print("Stoped!")
 
