@@ -60,7 +60,24 @@ def extract_keyword_count(d1):
 	for x in range(len(delete_list)) :
 		result_noun_list = result_noun_list.replace(delete_list[x],"") #*[2021-12-09 16:04:16]제외되는 부분을 외부 csv 파일로 변경
 	result_noun_list = result_noun_list.split(' ') #* 스트링을 다시 LIST로 결합
-	result_only_list = set(result_noun_list) #*결합된 스트링에서 중복값 삭제
+	result_only_list = list(set(result_noun_list)) #*결합된 스트링에서 중복값 삭제
+	
+	#*[2021-12-20 01:32:41] 조사 필터 추가
+	TotalCount = len(noun_filter)
+	CurrentCount = 0
+	Noun_Ratio = {}
+	for x in noun_filter:
+		CurrentCount += 1
+		Noun_Ratio[x] = 0
+		print(f"[{CurrentCount}/{TotalCount}] Filter Progress. \r", end='', flush = True)
+		for only in result_only_list:
+			if only+x in result_only_list:
+				Noun_Ratio[x] += 1
+				result_only_list.remove(only+x)
+		pass
+	result_only_list.remove(d1)
+	print("", end='\n')
+	print(Noun_Ratio)
 	
 	my_file = f"results/Daily_Results_Count/{d1}.csv"
 	if os.path.exists(my_file):
@@ -74,7 +91,7 @@ def extract_keyword_count(d1):
 	result_merge_list = [] #* [2021-12-14 02:25:44] 바로 내려적지 않고, 리스트로 묶어서 처리
 	for noun in result_only_list:
 		CurrentCount += 1
-		print(f"[{CurrentCount}/{TotalCount}] Progressing \r", end='', flush = True)
+		print(f"[{CurrentCount}/{TotalCount}] Count Progress. \r", end='', flush = True)
 		noun_count = sum(noun in s for s in result_noun_list)
 		if(noun in deny_list or len(noun) < 2 or len(noun) > 8 or noun_count < 2):continue
 		result_merge_list.append([noun,noun_count])
@@ -103,5 +120,5 @@ def CreateWC(d1):
 
 #TODO 이제 날짜별, 테마별로 묶어서 결과값 내보내는 과정이 필요함. Date로 검색범위 설정? 웹에서 날짜 고르면 결과 확인 가능하게 만들 수 있을까?
 #* 조사 삭제 or 포함 하는부분이 필요함 (https://ratsgo.github.io/korean%20linguistics/2017/03/15/words/)
-# extract_keyword_count()
+extract_keyword_count("오로치")
 # CreateWC()
