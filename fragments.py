@@ -75,7 +75,8 @@ def extract_keyword_count(d1):
 				Noun_Ratio[x] += 1
 				result_only_list.remove(only+x)
 		pass
-	result_only_list.remove(d1)
+	try : result_only_list.remove(d1)
+	except Exception as e : print(e)
 	print("", end='\n')
 	print(Noun_Ratio)
 	
